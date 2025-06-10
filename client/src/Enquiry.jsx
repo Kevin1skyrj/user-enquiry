@@ -1,5 +1,7 @@
 import React from "react";
+import { useState } from "react";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
 import {
   Table,
   TableBody,
@@ -20,7 +22,6 @@ import {
   TextInput,
   ToggleSwitch,
 } from "flowbite-react";
-import { useState } from "react";
 
 const Enquiry = () => {
   let [formData, setFormData] = useState({
@@ -33,16 +34,23 @@ const Enquiry = () => {
   let saveEnquiry = (e) => {
     e.preventDefault();
 
-    let formData = {
-      name: e.target.name.value,
-      email: e.target.email.value,
-      phone: e.target.phone.value,
-      message: e.target.message.value,
-    };
+    // let formData = {
+    //   name: e.target.name.value,
+    //   email: e.target.email.value,
+    //   phone: e.target.phone.value,
+    //   message: e.target.message.value,
+    // };
     axios
       .post("http://localhost:8000/api/web/enquiry/insert", formData)
       .then((res) => {
         console.log(res.data);
+        toast.success("Enquiry submitted successfully");
+        setFormData({
+          name: "",
+          email: "",
+          phone: "",
+          message: "",
+        });
       });
   };
 
@@ -50,12 +58,15 @@ const Enquiry = () => {
     let inputName = e.target.name;
     let inputValue = e.target.value;
     let oldData = { ...formData };
-    
+
     oldData[inputName] = inputValue;
     setFormData(oldData);
+  };
+
   return (
     <div>
       <h1 className="text-3xl font-bold mb-6 text-center mt-4">User Enquiry</h1>
+      <ToastContainer />
       <div className="grid grid-cols-[30%_auto] gap-10">
         <div className="bg-gray-200 p-4 w-[400px]">
           <h2 className="text-xl font-bold mb-6">Enquiry Form </h2>
