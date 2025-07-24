@@ -64,12 +64,12 @@ const Enquiry = () => {
   };
 
   return (
-    <div>
-      <h1 className="text-3xl font-bold mb-6 text-center mt-4">User Enquiry</h1>
+    <div className="px-2 sm:px-4 lg:px-0">
+      <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-center mt-4">User Enquiry</h1>
       <ToastContainer />
-      <div className="grid grid-cols-[30%_auto] gap-10">
-        <div className="bg-gray-200 p-4 w-[400px]">
-          <h2 className="text-xl font-bold mb-6">Enquiry Form </h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-10">
+        <div className="bg-gray-200 p-4 w-full max-w-lg mx-auto md:mx-8 md:w-[350px] lg:w-[400px] rounded-lg shadow">
+          <h2 className="text-lg sm:text-xl font-bold mb-6 text-center md:text-left">Enquiry Form </h2>
           <form action="" onSubmit={saveEnquiry} className="space-y-4">
             <div>
               <div className="mb-2 block">
@@ -132,10 +132,10 @@ const Enquiry = () => {
           </form>
         </div>
 
-        <div className="bg-gray-200 p-4">
+        <div className="bg-gray-200 p-4 mt-8 md:mt-0 rounded-lg shadow w-full lg:-ml-8 overflow-x-auto">
           {/* Enquiry list Table */}
-          <h2 className="text-xl font-bold mb-6">Enquiry List</h2>
-          <div className="overflow-x-auto">
+          <h2 className="text-lg md:text-xl font-bold mb-6 text-center md:text-left">Enquiry List</h2>
+          <div className="overflow-x-auto ">
             <Table>
               <TableHead>
                 <TableRow>
