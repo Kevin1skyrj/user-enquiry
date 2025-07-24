@@ -34,23 +34,26 @@ const Enquiry = () => {
   let saveEnquiry = (e) => {
     e.preventDefault();
 
-    // let formData = {
-    //   name: e.target.name.value,
-    //   email: e.target.email.value,
-    //   phone: e.target.phone.value,
-    //   message: e.target.message.value,
-    // };
     axios
       .post("http://localhost:8000/api/web/enquiry/insert", formData)
       .then((res) => {
-        console.log(res.data);
-        toast.success("Enquiry submitted successfully");
-        setFormData({
-          name: "",
-          email: "",
-          phone: "",
-          message: "",
-        });
+        if (res.data.status === 1) {
+          console.log(res.data);
+          toast.success("Enquiry submitted successfully");
+          setFormData({
+            name: "",
+            email: "",
+            phone: "",
+            message: "",
+          });
+        } else {
+          toast.error(res.data.message || "Submission failed");
+          console.error("Error:", res.data);
+        }
+      })
+      .catch((error) => {
+        console.error("Network error:", error);
+        toast.error("Network error. Please try again.");
       });
   };
 
