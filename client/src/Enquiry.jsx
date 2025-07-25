@@ -57,6 +57,21 @@ const Enquiry = () => {
       });
   };
 
+  let getAllEnquiries = () => {
+    axios
+      .get("http://localhost:8000/api/web/enquiry/view")
+      .then((res) => {
+        if (res.data.status === 1) {
+          console.log(res.data);
+        } else {
+          console.error("Error:", res.data);
+        }
+      })
+      .catch((error) => {
+        console.error("Network error:", error);
+      });
+  };
+
   let getValue = (e) => {
     let inputName = e.target.name;
     let inputValue = e.target.value;
