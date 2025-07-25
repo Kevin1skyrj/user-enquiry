@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import {
@@ -31,6 +31,13 @@ const Enquiry = () => {
     message: "",
   });
 
+  let [enquiries, setEnquiries] = useState([]);
+
+  // Fetch enquiries when component loads
+  useEffect(() => {
+    getAllEnquiries();
+  }, []);
+
   let saveEnquiry = (e) => {
     e.preventDefault();
 
@@ -46,6 +53,7 @@ const Enquiry = () => {
             phone: "",
             message: "",
           });
+          getAllEnquiries(); // Refresh the list after successful submission
         } else {
           toast.error(res.data.message || "Submission failed");
           console.error("Error:", res.data);
@@ -62,13 +70,16 @@ const Enquiry = () => {
       .get("http://localhost:8000/api/web/enquiry/view")
       .then((res) => {
         if (res.data.status === 1) {
-          console.log(res.data);
+          console.log("Fetched enquiries:", res.data.data);
+          setEnquiries(res.data.data);
         } else {
           console.error("Error:", res.data);
+          toast.error("Failed to fetch enquiries");
         }
       })
       .catch((error) => {
         console.error("Network error:", error);
+        toast.error("Network error while fetching enquiries");
       });
   };
 
@@ -85,8 +96,8 @@ const Enquiry = () => {
     <div className="px-2 sm:px-4 lg:px-0">
       <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-center mt-4">User Enquiry</h1>
       <ToastContainer />
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-10">
-        <div className="bg-gray-200 p-4 w-full max-w-lg mx-auto md:mx-8 md:w-[350px] lg:w-[400px] rounded-lg shadow">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-10 items-start">
+        <div className="bg-gray-200 p-4 w-full h-auto max-w-lg mx-auto md:mx-8 md:w-[350px] lg:w-[400px] rounded-lg shadow">
           <h2 className="text-lg sm:text-xl font-bold mb-6 text-center md:text-left">Enquiry Form </h2>
           <form action="" onSubmit={saveEnquiry} className="space-y-4">
             <div>
@@ -150,10 +161,10 @@ const Enquiry = () => {
           </form>
         </div>
 
-        <div className="bg-gray-200 p-4 mt-8 md:mt-0 rounded-lg shadow w-full lg:-ml-8 overflow-x-auto">
+        <div className="bg-gray-200 p-4 mt-8 md:mt-0 rounded-lg shadow w-full lg:-ml-8 h-[600px] flex flex-col">
           {/* Enquiry list Table */}
           <h2 className="text-lg md:text-xl font-bold mb-6 text-center md:text-left">Enquiry List</h2>
-          <div className="overflow-x-auto ">
+          <div className="overflow-auto flex-1">
             <Table>
               <TableHead>
                 <TableRow>
@@ -167,33 +178,51 @@ const Enquiry = () => {
                 </TableRow>
               </TableHead>
               <TableBody className="divide-y">
-                <TableRow className="bg-white dark:border-gray-700 dark:bg-gray-800">
-                  <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                    1
-                  </TableCell>
-                  <TableCell>John Doe</TableCell>
-                  <TableCell>name@example.com</TableCell>
-                  <TableCell>1234567890</TableCell>
-                  <TableCell>Your Message</TableCell>
-
-                  <TableCell>
-                    <a
-                      href="#"
-                      className="font-medium text-primary-600 hover:underline dark:text-primary-500"
-                    >
-                      Delete
-                    </a>
-                  </TableCell>
-
-                  <TableCell>
-                    <a
-                      href="#"
-                      className="font-medium text-primary-600 hover:underline dark:text-primary-500"
-                    >
-                      Edit
-                    </a>
-                  </TableCell>
-                </TableRow>
+                {enquiries.length === 0 ? (
+                  <TableRow className="bg-white dark:border-gray-700 dark:bg-gray-800">
+                    <TableCell colSpan={7} className="text-center py-4">
+                      No enquiries found
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  enquiries.map((enquiry, index) => (
+                    <TableRow key={enquiry._id} className="bg-white dark:border-gray-700 dark:bg-gray-800">
+                      <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                        {index + 1}
+                      </TableCell>
+                      <TableCell>{enquiry.name}</TableCell>
+                      <TableCell>{enquiry.email}</TableCell>
+                      <TableCell>{enquiry.phone}</TableCell>
+                      <TableCell className="max-w-xs truncate">{enquiry.message}</TableCell>
+                      <TableCell>
+                        <a
+                          href="#"
+                          className="font-medium text-red-600 hover:underline dark:text-red-500"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            // Add delete functionality later
+                            console.log("Delete enquiry:", enquiry._id);
+                          }}
+                        >
+                          Delete
+                        </a>
+                      </TableCell>
+                      <TableCell>
+                        <a
+                          href="#"
+                          className="font-medium text-blue-600 hover:underline dark:text-blue-500"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            // Add edit functionality later
+                            console.log("Edit enquiry:", enquiry._id);
+                          }}
+                        >
+                          Edit
+                        </a>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
               </TableBody>
             </Table>
           </div>
